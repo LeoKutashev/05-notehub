@@ -1,46 +1,48 @@
-import css from './NoteList.module.css';
-import type { Note } from '../../types/note';
+
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import css from './NoteList.module.css'
+import type { Note } from '../../types/note';
 import { deleteNote } from '../../services/noteService';
-import { useState } from 'react';
-interface NoteListProps {
-  notes: Note[];
+import iziToast from 'izitoast';
+import 'izitoast/dist/css/iziToast.min.css';
+
+interface NoteListProps{
+    notes: Note[];
 }
-
 export default function NoteList({ notes }: NoteListProps) {
-   const queryClient = useQueryClient();
-  const [deletingId, setDeletingId] = useState<number | null>(null);
-  const mutation = useMutation({
-    mutationFn: (id: string) => deleteNote(id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['notes'] });
-    },
-  });
+    const queryClient = useQueryClient();
+    
+    const mutation = useMutation({
+        mutationFn: (id: number) => deleteNote(id),
+        onSuccess: () => {
+            queryClient.invalidateQueries({queryKey: ['notes']})
+        },
+        onError: () => {
+            iziToast.error({
+                title: 'Error',
+                message: 'Failed to delete note. Please try again.',
+                position: 'topRight',
+                messageColor: '#ffffff',
+                messageSize: '16px',
+                backgroundColor: '#ef4040',
+            })
+        },
+    })
 
-  const handleDelete = (id: string) => {
-    mutation.mutate(id);
-  };
-
-  return (
-    <ul className={css.list}>
-      {notes.map(({ title, content, tag, id }) => (
-        <li className={css.listItem} key={id}>
-          <h2 className={css.title}>{title}</h2>
-          <p className={css.content}>{content}</p>
-          <div className={css.footer}>
-            <span className={css.tag}>{tag}</span>
-            <button
-              onClick={() => {
-                handleDelete(id);
-              }}
-              className={css.button}
-              disabled={mutation.isPending}
-            >
-              Delete
-            </button>
-          </div>
-        </li>
-      ))}
-    </ul>
-  );
+    return (
+        <ul className={css.list}>
+            {notes.map(note => {
+                return (
+                    <li key={note.id} className={css.listItem}>
+                        <h2 className={css.title}>{note.title}</h2>
+                        <p className={css.content}>{note.content}</p>
+                        <div className={css.footer}>
+                            <span className={css.tag}>{note.tag}</span>
+                            <button className={css.button} onClick={()=>mutation.mutate(note.id)}>Delete</button>
+                        </div>
+                    </li>
+                )
+            })}
+        </ul>
+    )
 }

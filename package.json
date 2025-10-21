@@ -19,6 +19,7 @@
     "axios": "^1.12.2",
     "formik": "^2.4.6",
     "install": "^0.13.0",
+    "izitoast": "^1.4.0",
     "modern-normalize": "^3.0.1",
     "npm": "^11.6.2",
     "react": "^19.2.0",
