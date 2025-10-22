@@ -13,24 +13,27 @@ const instance = axios.create({
   },
 });
 
+// -------------------- Types --------------------
+
 export interface FetchNotesParams {
   page?: number;
   perPage?: number;
   search?: string;
-  tag?: string;
+  tag?: string; // ✅ API підтримує фільтрацію за тегом
 }
 
 export interface FetchNotesResponse {
-  notes: Note[]; 
+  notes: Note[];   // ✅ API повертає "notes", а не "docs"
   totalPages: number;
 }
 
 export interface CreateNotePayload {
   title: string;
-  content: string; 
+  content: string; // ✅ обов’язкове навіть якщо порожній рядок
   tag: string;
 }
 
+// -------------------- API functions --------------------
 
 export const fetchNotes = async (
   params: FetchNotesParams = {}
@@ -50,6 +53,7 @@ export const createNote = async (
 };
 
 export const deleteNote = async (id: string): Promise<Note> => {
+  // ✅ API повертає видалену нотатку, а не _id/deletedCount
   const res = await instance.delete<Note>(`/notes/${id}`);
   return res.data;
 };
