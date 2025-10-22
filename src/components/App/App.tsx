@@ -20,9 +20,9 @@ export default function App() {
 
   const [debouncedQuery] = useDebounce(query, 300);
 
-  const { data, isSuccess} = useQuery({
+   const { data, isSuccess } = useQuery({
     queryKey: ['notes', debouncedQuery, page],
-    queryFn: () => fetchNotes(debouncedQuery, page),
+    queryFn: () => fetchNotes({ search: debouncedQuery, page }),
     placeholderData: keepPreviousData,
   });
 
@@ -45,7 +45,7 @@ export default function App() {
         </button>
       </header>
       {isSuccess && data.notes.length > 0 && <NoteList notes={data.notes} />}
-      {isCreateNote && <Modal onClose={handleClose} />}
+      {isCreateNote && <Modal onClose={handleClose}><div /></Modal>}
     </div>
   );
 }
