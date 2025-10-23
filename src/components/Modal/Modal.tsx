@@ -13,6 +13,8 @@ const Modal: React.FC<ModalProps> = ({ children, onClose }) => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
     };
+     const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
   }, [onClose]);
